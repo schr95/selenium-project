@@ -17,7 +17,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.assertj/assertj-core
     testImplementation 'org.assertj:assertj-core:3.26.3'
     // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
-    implementation 'org.seleniumhq.selenium:selenium-java:4.24.0'
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.24.0'
 
 
 
