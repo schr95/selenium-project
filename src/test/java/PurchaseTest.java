@@ -27,9 +27,20 @@ public class PurchaseTest {
         inputUser.sendKeys("standard_user");
         inputPassword.sendKeys("secret_sauce");
         buttonLogin.click();
-        //ASSERT
         WebElement pageTitle = driver.findElement(By.xpath("//span[@data-test='title']"));
         assertEquals("Products", pageTitle.getText(),"Login fallido");
+
+        //ACT
+        String firstItem="Sauce Labs Backpack";
+        String secondItem="Sauce Labs Bike Light";
+
+        String priceItemXpath="//div[contains(text(),'%s')]/ancestor::div[@class='inventory_item']/descendant::div[@class='inventory_item_price']";
+        String addToCartItemXpath="//div[contains(text(),'%s')]/ancestor::div[@class='inventory_item']/descendant::button";
+
+
+        WebElement priceItem= driver.findElement(By.xpath(String.format(priceItemXpath,firstItem)));
+        WebElement addToCartItem= driver.findElement(By.xpath(String.format(priceItemXpath,firstItem)));
+
 
     }
 }
