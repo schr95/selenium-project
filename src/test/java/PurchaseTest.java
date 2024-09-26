@@ -30,11 +30,13 @@ public class PurchaseTest {
     @Test
     public void testSuccessfulCheckout() {
         List<String> itemNames = List.of("Sauce Labs Backpack", "Sauce Labs Bike Light");
+        String checkoutCompleteMessage="Thank you for your order!";
 
         login("standard_user", "secret_sauce");
         List<Double> productPrices = addProductsToCart(itemNames);
         checkout("Fredik","Backman","05034");
         verifyTotal(productPrices);
+        finishProcess(checkoutCompleteMessage);
 
     }
 
@@ -48,7 +50,7 @@ public class PurchaseTest {
         buttonLogin.click();
 
         WebElement pageTitle = driver.findElement(By.xpath("//span[@data-test='title']"));
-        assertEquals("Products", pageTitle.getText(), "Login fallido o incorrecta redirección");
+        assertEquals("Products", pageTitle.getText(), "Login failed");
     }
 
     public List<Double> addProductsToCart(List<String> itemNames) {
@@ -70,7 +72,8 @@ public class PurchaseTest {
     }
 
     public void checkout(String firstName, String lastName, String postalCode) {
-        WebElement cartButton = driver.findElement(By.xpath("//div[@class='shopping_cart_container']/child::a[@data-test='shopping-cart-link']"));
+        WebElement cartButton =
+                driver.findElement(By.xpath("//div[@class='shopping_cart_container']/child::a[@data-test='shopping-cart-link']"));
         cartButton.click();
 
         WebElement checkoutButton = driver.findElement(By.id("checkout"));
@@ -102,5 +105,16 @@ public class PurchaseTest {
 
         assertEquals(itemTotal, expectedItemTotal, "Total price is not correct");
         assertEquals(total, expectedTotal, "Total price + taxes is not correct");
+    }
+
+    public void finishProcess(String expectedMessage) {
+        WebElement finishButton = driver.findElement(By.id("finish"));
+        finishButton.click();
+
+        WebElement checkoutCompleteMessage =
+                driver.findElement(By.xpath("//button[@data-test='back-to-products']/preceding-sibling::h2"));
+        assertEquals(checkoutCompleteMessage.getText(),expectedMessage,
+                "Error: The final checkout message displayed was '" + checkoutCompleteMessage.getText()
+                        + "', but the expected message was '" + expectedMessage + "'. Please verify the flow.");
     }
 }
