@@ -4,6 +4,7 @@
 
 Este proyecto forma parte de la asignatura **Tópicos Avanzados de Software** y tiene como objetivo automatizar el proceso de compra en el sitio web [SauceDemo](https://www.saucedemo.com/) utilizando **Selenium WebDriver** y **JUnit**. 
 
+Además se agrega una clase `OptionalChallengesTest` en donde se desarrollan 3 retos opcionales con la interaccion de iframes, alerts y tabs cada uno con su respectivo test.
 ### Alumnos
 
 - Sara Herrera Ramírez
@@ -62,7 +63,8 @@ El proyecto contiene la siguiente estructura principal:
 /src
   └── /test
     └── LoginTest.java 
-    └── PurchaseTest.java    // Clase principal que contiene las pruebas de automatización
+    └── PurchaseTest.java    // Clase principal que contiene las pruebas de automatización para saucedemo
+    └── OptionalChallengesTest.java   // Clase que contiene los retos automatizando la interaccion con iframes, alerts y tabs
 ```
 
 ### Descripción de la Clase `PurchaseTest`

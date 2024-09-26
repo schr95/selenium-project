@@ -23,7 +23,7 @@ public class PurchaseTest {
 
     @AfterEach
     void teardown() {
-        driver.close();
+            driver.quit();
     }
 
 
