@@ -30,7 +30,7 @@ public class LoginTest {
     }
 
     @Test
-    public void loginExitoso(){
+    public void testSuccessfulLogin(){
         //ARRANGE
         driver.get("https://www.saucedemo.com/");
         //ACT
