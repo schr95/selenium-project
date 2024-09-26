@@ -6,6 +6,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PurchaseTest {
@@ -17,6 +20,7 @@ public class PurchaseTest {
         driver = new ChromeDriver();
         driver.manage().window().maximize();
     }
+
     @AfterEach
     void teardown() {
         driver.close();
@@ -24,22 +28,12 @@ public class PurchaseTest {
 
 
     @Test
-    public void testSuccessfulCheckout(){
-        String firstItem="Sauce Labs Backpack";
-        String secondItem="Sauce Labs Bike Light";
+    public void testSuccessfulCheckout() {
+        List<String> itemNames = List.of("Sauce Labs Backpack", "Sauce Labs Bike Light");
 
-        String priceItemXpath="//div[contains(text(),'%s')]/ancestor::div[@class='inventory_item']/descendant::div[@class='inventory_item_price']";
-        String addToCartItemXpath="//div[contains(text(),'%s')]/ancestor::div[@class='inventory_item']/descendant::button";
+        login("standard_user", "secret_sauce");
 
-        //ARRANGE
-        login("standard_user","secret_sauce");
-
-        //ACT
-        WebElement priceItem= driver.findElement(By.xpath(String.format(priceItemXpath,firstItem)));
-        WebElement addToCartItem= driver.findElement(By.xpath(String.format(priceItemXpath,firstItem)));
-
-        System.out.println(priceItem.getText());
-
+        List<Double> productPrices = addProductsToCart(itemNames);
 
     }
 
@@ -54,5 +48,23 @@ public class PurchaseTest {
 
         WebElement pageTitle = driver.findElement(By.xpath("//span[@data-test='title']"));
         assertEquals("Products", pageTitle.getText(), "Login fallido o incorrecta redirección");
+    }
+
+    public List<Double> addProductsToCart(List<String> itemNames) {
+        List<Double> productPrices = new ArrayList<>();
+        String priceItemXpath = "//div[contains(text(),'%s')]/ancestor::div[@class='inventory_item']/descendant::div[@class='inventory_item_price']";
+        String addToCartItemXpath = "//div[contains(text(),'%s')]/ancestor::div[@class='inventory_item']/descendant::button";
+
+        for (String itemName : itemNames) {
+            WebElement itemAddToCart = driver.findElement(By.xpath(String.format(addToCartItemXpath, itemName)));
+            WebElement itemPriceElement = driver.findElement(By.xpath(String.format(priceItemXpath, itemName)));
+
+            itemAddToCart.click();
+
+            double itemPrice = Double.parseDouble(itemPriceElement.getText().replace("$", ""));
+            productPrices.add(itemPrice);
+        }
+
+        return productPrices;
     }
 }
