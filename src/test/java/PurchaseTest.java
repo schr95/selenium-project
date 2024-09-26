@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -16,31 +17,42 @@ public class PurchaseTest {
         driver = new ChromeDriver();
         driver.manage().window().maximize();
     }
+    @AfterEach
+    void teardown() {
+        driver.close();
+    }
+
 
     @Test
     public void testSuccessfulCheckout(){
-        //ARRANGE
-        driver.get("https://www.saucedemo.com/");
-        WebElement inputUser = driver.findElement(By.id("user-name"));
-        WebElement inputPassword = driver.findElement(By.id("password"));
-        WebElement buttonLogin = driver.findElement(By.id("login-button"));
-        inputUser.sendKeys("standard_user");
-        inputPassword.sendKeys("secret_sauce");
-        buttonLogin.click();
-        WebElement pageTitle = driver.findElement(By.xpath("//span[@data-test='title']"));
-        assertEquals("Products", pageTitle.getText(),"Login fallido");
-
-        //ACT
         String firstItem="Sauce Labs Backpack";
         String secondItem="Sauce Labs Bike Light";
 
         String priceItemXpath="//div[contains(text(),'%s')]/ancestor::div[@class='inventory_item']/descendant::div[@class='inventory_item_price']";
         String addToCartItemXpath="//div[contains(text(),'%s')]/ancestor::div[@class='inventory_item']/descendant::button";
 
+        //ARRANGE
+        login("standard_user","secret_sauce");
 
+        //ACT
         WebElement priceItem= driver.findElement(By.xpath(String.format(priceItemXpath,firstItem)));
         WebElement addToCartItem= driver.findElement(By.xpath(String.format(priceItemXpath,firstItem)));
 
+        System.out.println(priceItem.getText());
 
+
+    }
+
+    public void login(String username, String password) {
+        driver.get("https://www.saucedemo.com/");
+        WebElement inputUser = driver.findElement(By.id("user-name"));
+        WebElement inputPassword = driver.findElement(By.id("password"));
+        WebElement buttonLogin = driver.findElement(By.id("login-button"));
+        inputUser.sendKeys(username);
+        inputPassword.sendKeys(password);
+        buttonLogin.click();
+
+        WebElement pageTitle = driver.findElement(By.xpath("//span[@data-test='title']"));
+        assertEquals("Products", pageTitle.getText(), "Login fallido o incorrecta redirección");
     }
 }
