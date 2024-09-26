@@ -32,8 +32,9 @@ public class PurchaseTest {
         List<String> itemNames = List.of("Sauce Labs Backpack", "Sauce Labs Bike Light");
 
         login("standard_user", "secret_sauce");
-
         List<Double> productPrices = addProductsToCart(itemNames);
+        checkout("Fredik","Backman","05034");
+        verifyTotal(productPrices);
 
     }
 
@@ -66,5 +67,40 @@ public class PurchaseTest {
         }
 
         return productPrices;
+    }
+
+    public void checkout(String firstName, String lastName, String postalCode) {
+        WebElement cartButton = driver.findElement(By.xpath("//div[@class='shopping_cart_container']/child::a[@data-test='shopping-cart-link']"));
+        cartButton.click();
+
+        WebElement checkoutButton = driver.findElement(By.id("checkout"));
+        checkoutButton.click();
+
+        WebElement firstNameField = driver.findElement(By.id("first-name"));
+        WebElement lastNameField = driver.findElement(By.id("last-name"));
+        WebElement postalCodeField = driver.findElement(By.id("postal-code"));
+
+        firstNameField.sendKeys(firstName);
+        lastNameField.sendKeys(lastName);
+        postalCodeField.sendKeys(postalCode);
+
+        WebElement continueButton = driver.findElement(By.id("continue"));
+        continueButton.click();
+    }
+
+    public void verifyTotal(List<Double> productPrices) {
+        WebElement itemTotalElement = driver.findElement(By.xpath("//div[@data-test='subtotal-label']"));
+        WebElement taxElement = driver.findElement(By.className("summary_tax_label"));
+        WebElement totalElement = driver.findElement(By.className("summary_total_label"));
+
+        double itemTotal = Double.parseDouble(itemTotalElement.getText().replace("Item total: $", ""));
+        double tax = Double.parseDouble(taxElement.getText().replace("Tax: $", ""));
+        double total = Double.parseDouble(totalElement.getText().replace("Total: $", ""));
+
+        double expectedItemTotal = productPrices.stream().mapToDouble(Double::doubleValue).sum();
+        double expectedTotal = expectedItemTotal + tax;
+
+        assertEquals(itemTotal, expectedItemTotal, "Total price is not correct");
+        assertEquals(total, expectedTotal, "Total price + taxes is not correct");
     }
 }
